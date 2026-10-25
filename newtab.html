@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>New Tab</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="bg"></div>
+<div id="shade"></div>
+<canvas id="rain"></canvas>
+<button id="gear" title="Customise (S)" aria-label="Customise">&#9881;</button>
+<main id="stage"></main>
+<div id="pool" hidden>
+  <section id="clock"></section>
+  <section id="greet"></section>
+  <section id="quote"></section>
+  <form id="search"><svg class="si" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="q" type="text" placeholder="Search the web" autocomplete="off"></form>
+  <nav id="links"></nav>
+  <div id="todo"><div class="title">Todos</div><div id="todoBody"></div></div>
+  <div id="notes"><div class="title">Notes</div><textarea id="notesText" placeholder="Jot something down..."></textarea></div>
+</div>
+<a id="credit" target="_blank" rel="noopener"></a>
+
+<div id="drawer" hidden>
+  <div class="scrim"></div>
+  <div class="panel">
+    <h1 id="brand">Raindrop</h1>
+    <details class="sec" data-sec="bg"><summary>Background</summary>
+    <label>Style
+      <select data-k="bg.type">
+        <option value="raindrop">Raindrop (rain on glass)</option>
+        <option value="unsplash">Unsplash photo</option>
+        <option value="gradient">Gradient</option>
+        <option value="solid">Solid colour</option>
+        <option value="image">Upload image</option>
+      </select>
+    </label>
+    <div data-show="raindrop">
+      <label>Rain intensity <input type="range" min="1" max="10" data-k="bg.intensity"></label>
+      <label>Sky top <input type="color" data-k="bg.c1"></label>
+      <label>Sky bottom <input type="color" data-k="bg.c2"></label>
+    </div>
+    <div data-show="gradient">
+      <label>From <input type="color" data-k="bg.c1"></label>
+      <label>To <input type="color" data-k="bg.c2"></label>
+    </div>
+    <div data-show="solid"><label>Colour <input type="color" data-k="bg.solid"></label></div>
+    <div data-show="image"><label>Image <input type="file" id="file" accept="image/*"></label></div>
+    <div data-show="unsplash">
+      <label>Show a new photo <button id="pauseBtn" type="button" class="icon" title="Pause or resume"></button>
+        <select data-k="bg.every"><option value="0">Every new tab</option><option value="5">Every 5 minutes</option><option value="10">Every 10 minutes</option><option value="15">Every 15 minutes</option><option value="30">Every 30 minutes</option><option value="60">Every hour</option></select>
+      </label>
+      <label class="row"><input type="radio" name="by" value="official"> Official Collection</label>
+      <label class="row"><input type="radio" name="by" value="topic"> Topic</label>
+      <label class="row"><input type="radio" name="by" value="search"> Search</label>
+      <label class="row"><input type="radio" name="by" value="collection"> Collection</label>
+      <div data-by="topic"><select data-k="bg.topic"><option value="wallpapers">Wallpapers</option><option value="nature">Nature</option><option value="travel">Travel</option><option value="architecture-interior">Architecture &amp; Interior</option><option value="textures-patterns">Textures &amp; Patterns</option><option value="street-photography">Street Photography</option><option value="film">Film</option><option value="experimental">Experimental</option><option value="animals">Animals</option><option value="people">People</option><option value="food-drink">Food &amp; Drink</option><option value="3d-renders">3D Renders</option></select></div>
+      <div data-by="search"><label>Tags <input type="text" data-k="bg.query" placeholder="Try landscapes or animals..."></label></div>
+      <div data-by="collection"><label>Collection IDs <input type="text" data-k="bg.collections" placeholder="e.g. 317099, 1065976"></label></div>
+      <label class="row"><input type="checkbox" data-k="bg.featured"> Only featured images</label>
+      <button class="btn alt" id="nextPhoto" type="button">Next photo now</button>
+      <label class="row"><input type="checkbox" data-k="bg.hideCredit"> Hide photo credit</label>
+      <p class="hint">Add your key under Sync and API keys > API keys. Unsplash asks apps to credit photographers, so only hide it if you accept that. Free keys allow about 50 requests an hour.</p>
+    </div>
+    <div data-show="unsplash,image">
+      <label>Blur <input type="range" min="0" max="20" data-k="bg.blur"></label>
+      <label>Luminosity <input type="range" min="-100" max="100" data-k="bg.lum"></label>
+    </div>
+    <label>Background transition
+      <select data-k="bg.anim"><option value="fade">Fade</option><option value="slide-in">Slide in</option><option value="slide-out">Slide out</option><option value="zoom">Zoom fade</option><option value="none">None</option></select>
+    </label>
+    <label>Transition speed <input type="range" min="200" max="2000" step="100" data-k="bg.dur"></label>
+    <label class="row"><input type="checkbox" data-k="bg.overlay"> Rain overlay on photos and colours</label>
+
+    </details>
+
+    <details class="sec" data-sec="look"><summary>Look and feel</summary>
+    <p class="hint">Busy photo? Raise the shade and text shadow.</p>
+    <label>Backdrop shade <input type="range" min="0" max="85" data-k="look.shade"></label>
+    <label>Text shadow <input type="range" min="0" max="50" data-k="look.tsh"></label>
+
+    </details>
+
+    <details class="sec" data-sec="widgets"><summary>Widgets</summary>
+    <label class="row"><input type="checkbox" data-k="show.clock"> Clock</label>
+    <label class="row"><input type="checkbox" data-k="show.greet"> Greeting</label>
+    <label class="row"><input type="checkbox" data-k="show.quote"> Quote</label>
+    <label class="row"><input type="checkbox" data-k="show.search"> Search</label>
+    <label class="row"><input type="checkbox" data-k="show.links"> Quick links</label>
+    <label class="row"><input type="checkbox" data-k="show.todo"> Todos</label>
+    <label class="row"><input type="checkbox" data-k="show.notes"> Notes</label>
+
+    </details>
+
+    <details class="sec" data-sec="groups"><summary>Groups and widget styles</summary>
+    <p class="hint">Widgets in a group move, resize and restyle together. Open one to change position, size, font, colour, background (0 = fully transparent) and corner radius. Click any widget or group on the page for its move and lock icons.</p>
+    <div id="wStyles"></div>
+
+    </details>
+
+    <details class="sec" data-sec="quote"><summary>Quote Settings</summary>
+    <label>Quote source
+      <select data-k="quoteSrc"><option value="quotable">Quotable (types, free)</option><option value="zen">ZenQuotes (random, free)</option><option value="ninjas">API Ninjas (types, needs a key)</option></select>
+    </label>
+    <label>Quote type
+      <select data-k="quoteCat"><option value="inspirational">Inspirational</option><option value="wisdom">Wisdom</option><option value="success">Success</option><option value="technology">Technology</option><option value="humorous">Humorous</option><option value="love">Love</option><option value="life">Life</option></select>
+    </label>
+    </details>
+
+    <details class="sec" data-sec="search"><summary>Search Settings</summary>
+    <label>Search engine
+      <select data-k="engine"><option value="google">Google</option><option value="ddg">DuckDuckGo</option><option value="bing">Bing</option><option value="brave">Brave</option><option value="ecosia">Ecosia</option><option value="startpage">Startpage</option><option value="yahoo">Yahoo</option><option value="youtube">YouTube</option><option value="custom">Custom URL...</option></select>
+    </label>
+    <div data-eng="custom"><label>Custom search URL <input type="text" data-k="search.custom" placeholder="https://example.com/search?q=%s"></label><p class="hint">Use %s where the search words go.</p></div>
+    <label>Bar style
+      <select data-k="search.style"><option value="pill">Pill</option><option value="rounded">Rounded box</option><option value="underline">Empty line</option><option value="glow">Glowing line</option><option value="outline">Outline</option><option value="glass">Frosted glass</option><option value="minimal">Minimal</option></select>
+    </label>
+    <label>Placeholder text <input type="text" data-k="search.placeholder"></label>
+    <label class="row"><input type="checkbox" data-k="search.icon"> Show search icon</label>
+    </details>
+
+    <details class="sec" data-sec="clocks"><summary>Clock Settings</summary>
+    <p class="hint">Type a country or city, e.g. Singapore or Malaysia.</p>
+    <div id="clockList"></div>
+    <button id="addClock" class="btn">+ Add clock</button>
+    <datalist id="tzlist"></datalist>
+
+    </details>
+
+    <details class="sec" data-sec="general"><summary>Settings</summary>
+    <label>Your name (shown at the top of this menu) <input type="text" data-k="name" placeholder="Raindrop"></label>
+    <label>Time format
+      <select data-k="fmt"><option value="24">24-hour</option><option value="12">12-hour</option></select>
+    </label>
+    <label>Quick links (one per line: Name | URL)
+      <textarea id="linksText" rows="5"></textarea>
+    </label>
+
+    </details>
+
+    <details class="sec" data-sec="sync"><summary>Sync and API keys</summary>
+    <label>Back up settings with
+      <select data-k="sync.provider"><option value="none">Off</option><option value="google">Google account (easiest)</option><option value="github">GitHub (advanced)</option></select>
+    </label>
+    <div data-prov="google">
+      <p class="hint">Saves your settings to a hidden app folder in your own Google Drive. Raindrop can only see that folder.</p>
+      <button class="btn" id="gConnect">Connect Google account</button><button class="btn alt" id="gDisconnect">Disconnect</button>
+      <p class="hint" id="gStatus"></p>
+    </div>
+    <div data-prov="github"><p class="hint">Saves settings to a private Gist in your GitHub account. Add a classic token (scope "gist" only) under API keys.</p></div>
+    <div data-prov="google github">
+      <label class="row"><input type="checkbox" data-k="sync.auto"> Auto-sync (pull on open, push after changes)</label>
+      <button class="btn" id="syncPush">Sync now</button> <button class="btn alt" id="syncPull">Pull</button>
+      <p class="hint" id="syncMsg"></p>
+    </div>
+    <button class="btn alt" id="keysOpen">API keys...</button>
+    <p class="hint">Your keys are encrypted with a passphrase if you set one.</p>
+    </details>
+
+    <p><a id="export">Export</a> &middot; <a id="import">import</a> &middot; <a id="resetLayout">reset layout</a> &middot; <a id="reset">reset all</a></p>
+    <p class="hint" id="ver"></p>
+    <p class="hint">Keys: S settings, Esc close.</p>
+  </div>
+</div>
+<div id="keysModal" class="modal" hidden>
+  <div class="mscrim"></div>
+  <div class="mbox">
+    <h2>API keys</h2>
+    <p class="hint" data-st="plain">Keys are stored in this browser without encryption. Set a passphrase below to encrypt them.</p>
+    <p class="hint" data-st="locked">Your keys are encrypted. Enter your passphrase to unlock them for this browser session.</p>
+    <p class="hint" data-st="open">Your keys are encrypted at rest (AES-256-GCM) and stay unlocked until you close the browser or lock them.</p>
+    <div data-st="plain open">
+      <label>Unsplash access key <input type="password" data-key="UNSPLASH_ACCESS_KEY" autocomplete="off" spellcheck="false"></label>
+      <label>API Ninjas key <input type="password" data-key="API_NINJAS_KEY" autocomplete="off" spellcheck="false"></label>
+      <label>GitHub token (gist scope) <input type="password" data-key="GITHUB_TOKEN" autocomplete="off" spellcheck="false"></label>
+      <label>Gist ID <input type="text" data-k="sync.gist" placeholder="Created on first sync" autocomplete="off"></label>
+    </div>
+    <div data-st="plain">
+      <label>New passphrase (8+ characters) <input type="password" id="kPass" autocomplete="new-password"></label>
+      <label>Repeat passphrase <input type="password" id="kPass2" autocomplete="new-password"></label>
+      <button class="btn" id="kProtect">Encrypt keys</button>
+    </div>
+    <div data-st="locked">
+      <label>Passphrase <input type="password" id="kUnlockPass" autocomplete="current-password"></label>
+      <button class="btn" id="kUnlock">Unlock</button>
+    </div>
+    <div data-st="open">
+      <label class="row"><input type="checkbox" data-k="keys.syncVault"> Include the encrypted keys when syncing</label>
+      <button class="btn alt" id="kLock">Lock now</button> <button class="btn alt" id="kRemove">Remove passphrase</button>
+    </div>
+    <p class="hint" id="kMsg"></p>
+    <button class="btn" id="keysClose">Done</button>
+    <p class="hint">Use a passphrase you do not use elsewhere. If you forget it the keys cannot be recovered; just enter them again.</p>
+  </div>
+</div>
+<script src="config.js"></script>
+<script src="rain.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
