@@ -1,0 +1,6 @@
+Raindrop
+Copyright (c) 2026 RiANDRAFT. All rights reserved except as granted below.
+
+Personal installation, use, inspection, building and modification are permitted under legal/TERMS-OF-USE.md. These Terms do not grant permission to sell, sublicense or redistribute the original Software or branding. Applicable third-party licenses and mandatory legal rights remain unaffected.
+
+The Software is provided AS IS, without warranties, subject to mandatory applicable rights. See the full Terms for conditions and liability provisions. Third-party components/notices are listed in legal/THIRD-PARTY-LICENSES.md.

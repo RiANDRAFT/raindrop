@@ -2,14 +2,16 @@
   "manifest_version": 3,
   "name": "Raindrop",
   "short_name": "Raindrop",
-  "version": "1.3.1",
+  "version": "1.12.11",
   "description": "A calm, customisable new tab page: rain-on-glass or Unsplash backgrounds, grouped and movable widgets.",
   "chrome_url_overrides": {
     "newtab": "newtab.html"
   },
   "permissions": [
     "storage",
-    "identity"
+    "identity",
+    "declarativeNetRequestWithHostAccess",
+    "unlimitedStorage"
   ],
   "host_permissions": [
     "https://api.unsplash.com/*",
@@ -28,12 +30,27 @@
     "128": "icons/128.png"
   },
   "oauth2": {
-    "client_id": "YOUR_CLIENT_ID.apps.googleusercontent.com",
+    "client_id": "273521131652-c4516nt101saq1stekvtkvq1dj5vgk8d.apps.googleusercontent.com",
     "scopes": [
       "https://www.googleapis.com/auth/drive.appdata"
     ]
   },
   "content_security_policy": {
-    "extension_pages": "default-src 'self'; script-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; style-src 'self'; img-src 'self' data: blob: https:; connect-src https://api.unsplash.com https://api.quotable.io https://zenquotes.io https://api.api-ninjas.com https://api.github.com https://gist.githubusercontent.com https://www.googleapis.com https://oauth2.googleapis.com"
+    "extension_pages": "default-src 'self'; script-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; style-src 'self'; frame-src 'self' https:; img-src 'self' data: blob: https:; connect-src https://api.unsplash.com https://api.quotable.io https://zenquotes.io https://api.api-ninjas.com https://api.github.com https://gist.githubusercontent.com https://www.googleapis.com https://oauth2.googleapis.com",
+    "sandbox": "sandbox allow-scripts allow-forms allow-popups allow-modals allow-presentation allow-popups-to-escape-sandbox; script-src 'self' 'unsafe-inline' 'unsafe-eval' https:; object-src 'none'; child-src https:; frame-src https:; connect-src https: wss:; img-src * data: blob:; media-src https: data: blob:; style-src 'self' 'unsafe-inline' https:; font-src https: data:"
+  },
+  "sandbox": {
+    "pages": [
+      "sandbox.html"
+    ]
+  },
+  "optional_host_permissions": [
+    "https://*/*"
+  ],
+  "optional_permissions": [
+    "tabs"
+  ],
+  "background": {
+    "service_worker": "background.js"
   }
 }

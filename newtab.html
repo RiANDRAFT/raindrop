@@ -4,13 +4,18 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>New Tab</title>
+<link rel="icon" type="image/png" href="icons/32.png">
 <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="ui-theme.css">
+  <script type="module" crossorigin src="./assets/newtab-DP6yHzZH.js"></script>
 </head>
 <body>
 <div id="bg"></div>
 <div id="shade"></div>
 <canvas id="rain"></canvas>
+<div id="settingsReveal" aria-hidden="true"></div>
 <button id="gear" title="Customise (S)" aria-label="Customise">&#9881;</button>
+<div id="layoutCanvas">
 <main id="stage"></main>
 <div id="pool" hidden>
   <section id="clock"></section>
@@ -18,16 +23,18 @@
   <section id="quote"></section>
   <form id="search"><svg class="si" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="q" type="text" placeholder="Search the web" autocomplete="off"></form>
   <nav id="links"></nav>
-  <div id="todo"><div class="title">Todos</div><div id="todoBody"></div></div>
-  <div id="notes"><div class="title">Notes</div><textarea id="notesText" placeholder="Jot something down..."></textarea></div>
+  <div id="todo"><div class="title">Todos</div><div id="todoBody"></div><div class="stor" id="todoStor"></div></div>
+  <div id="notes"><div class="title">Notes</div><textarea id="notesText" placeholder="Jot something down..."></textarea><div id="notesMask" hidden></div><div class="stor" id="notesStor"></div></div>
+</div>
 </div>
 <a id="credit" target="_blank" rel="noopener"></a>
 
 <div id="drawer" hidden>
   <div class="scrim"></div>
   <div class="panel">
-    <h1 id="brand">Raindrop</h1>
-    <details class="sec" data-sec="bg"><summary>Background</summary>
+    <header class="panel-header"><div class="panel-identity"><span class="panel-brand-mark" aria-hidden="true"><img class="raindrop-logo" src="icons/128.png" width="128" height="128" alt="" aria-hidden="true"></span><div><h1 id="brand">Raindrop</h1><p class="panel-subtitle">Make this space yours</p></div></div><button id="drawerClose" class="ui-icon-button" type="button" aria-label="Close settings">×</button></header>
+    <details class="sec" data-sec="bg"><summary>Customize</summary>
+    <h3 class="subh">Background</h3>
     <label>Style
       <select data-k="bg.type">
         <option value="raindrop">Raindrop (rain on glass)</option>
@@ -74,129 +81,325 @@
     <label>Transition speed <input type="range" min="200" max="2000" step="100" data-k="bg.dur"></label>
     <label class="row"><input type="checkbox" data-k="bg.overlay"> Rain overlay on photos and colours</label>
 
-    </details>
-
-    <details class="sec" data-sec="look"><summary>Look and feel</summary>
+    
+    <h3 class="subh">Look and feel</h3>
     <p class="hint">Busy photo? Raise the shade and text shadow.</p>
     <label>Backdrop shade <input type="range" min="0" max="85" data-k="look.shade"></label>
     <label>Text shadow <input type="range" min="0" max="50" data-k="look.tsh"></label>
-
     </details>
 
     <details class="sec" data-sec="widgets"><summary>Widgets</summary>
-    <label class="row"><input type="checkbox" data-k="show.clock"> Clock</label>
-    <label class="row"><input type="checkbox" data-k="show.greet"> Greeting</label>
-    <label class="row"><input type="checkbox" data-k="show.quote"> Quote</label>
-    <label class="row"><input type="checkbox" data-k="show.search"> Search</label>
-    <label class="row"><input type="checkbox" data-k="show.links"> Quick links</label>
-    <label class="row"><input type="checkbox" data-k="show.todo"> Todos</label>
-    <label class="row"><input type="checkbox" data-k="show.notes"> Notes</label>
-
-    </details>
-
-    <details class="sec" data-sec="groups"><summary>Groups and widget styles</summary>
-    <p class="hint">Widgets in a group move, resize and restyle together. Open one to change position, size, font, colour, background (0 = fully transparent) and corner radius. Click any widget or group on the page for its move and lock icons.</p>
+    <p class="hint">Open a widget to show or hide it and change its settings and style. Click a widget on the page to move or lock it.</p>
     <div id="wStyles"></div>
-
+    <div class="btn-row"><button class="btn" id="addSub" type="button">+ Add sub clock</button><button class="btn" id="addCustom" type="button">+ Add custom widget</button></div>
     </details>
 
-    <details class="sec" data-sec="quote"><summary>Quote Settings</summary>
-    <label>Quote source
-      <select data-k="quoteSrc"><option value="quotable">Quotable (types, free)</option><option value="zen">ZenQuotes (random, free)</option><option value="ninjas">API Ninjas (types, needs a key)</option></select>
-    </label>
-    <label>Quote type
-      <select data-k="quoteCat"><option value="inspirational">Inspirational</option><option value="wisdom">Wisdom</option><option value="success">Success</option><option value="technology">Technology</option><option value="humorous">Humorous</option><option value="love">Love</option><option value="life">Life</option></select>
-    </label>
-    </details>
-
-    <details class="sec" data-sec="search"><summary>Search Settings</summary>
-    <label>Search engine
-      <select data-k="engine"><option value="google">Google</option><option value="ddg">DuckDuckGo</option><option value="bing">Bing</option><option value="brave">Brave</option><option value="ecosia">Ecosia</option><option value="startpage">Startpage</option><option value="yahoo">Yahoo</option><option value="youtube">YouTube</option><option value="custom">Custom URL...</option></select>
-    </label>
-    <div data-eng="custom"><label>Custom search URL <input type="text" data-k="search.custom" placeholder="https://example.com/search?q=%s"></label><p class="hint">Use %s where the search words go.</p></div>
-    <label>Bar style
-      <select data-k="search.style"><option value="pill">Pill</option><option value="rounded">Rounded box</option><option value="underline">Empty line</option><option value="glow">Glowing line</option><option value="outline">Outline</option><option value="glass">Frosted glass</option><option value="minimal">Minimal</option></select>
-    </label>
-    <label>Placeholder text <input type="text" data-k="search.placeholder"></label>
-    <label class="row"><input type="checkbox" data-k="search.icon"> Show search icon</label>
-    </details>
-
-    <details class="sec" data-sec="clocks"><summary>Clock Settings</summary>
-    <p class="hint">Type a country or city, e.g. Singapore or Malaysia.</p>
-    <div id="clockList"></div>
-    <button id="addClock" class="btn">+ Add clock</button>
-    <datalist id="tzlist"></datalist>
-
+    <details class="sec" data-sec="groups"><summary>Groups</summary>
+    <p class="hint">Widgets in a group move and resize together. Create a group here, then pick it in a widget's Group menu. Open a group to restyle or ungroup it.</p>
+    <div id="gStyles"></div>
+    <button class="btn" id="newGroup" type="button">+ New group</button>
     </details>
 
     <details class="sec" data-sec="general"><summary>Settings</summary>
-    <label>Your name (shown at the top of this menu) <input type="text" data-k="name" placeholder="Raindrop"></label>
-    <label>Time format
-      <select data-k="fmt"><option value="24">24-hour</option><option value="12">12-hour</option></select>
-    </label>
-    <label>Quick links (one per line: Name | URL)
-      <textarea id="linksText" rows="5"></textarea>
-    </label>
-
-    </details>
-
-    <details class="sec" data-sec="sync"><summary>Sync and API keys</summary>
+    <button class="btn account-entry" id="keysOpen" type="button">Account Settings...</button>
+    <p class="hint">Master password, recovery and API keys.</p>
+    <label>Your name (used in greetings) <input type="text" data-k="name" placeholder="Optional"></label>
+    <label>Dashboard on different screens <select data-k="layout.freeResize"><option value="canvas">Fit the whole dashboard</option><option value="responsive">Keep relative positions (fixed sizes)</option><option value="pixels">Keep pixel positions (legacy)</option></select></label>
+    <p class="hint">Fit scales widgets, groups, spacing and manual positions together. Set the reference on the monitor where your layout looks right. The other modes do not scale the whole dashboard; free groups keep their own scaling behavior.</p>
+    <button id="setCanvasReference" class="btn alt" type="button">Use this window as reference</button>
+    <p id="canvasReferenceStatus" class="hint"></p>
+    <label class="row"><input type="checkbox" data-k="ui.autoHideSettings"> Auto-hide settings icon</label>
+    <p class="hint">Reveal it at the top-left corner or by keyboard focus. Your settings shortcut still works outside text fields.</p>
+    <label>Interface theme <select id="interfaceTheme"><option value="system">System</option><option value="light">Light</option><option value="dark">Dark</option></select></label>
+    <p class="hint">Applies to settings, dialogs and the tutorial. Your dashboard styling stays separate.</p>
     <label>Back up settings with
-      <select data-k="sync.provider"><option value="none">Off</option><option value="google">Google account (easiest)</option><option value="github">GitHub (advanced)</option></select>
+      <select data-k="sync.provider"><option value="none">Off</option><option value="google">Google Drive</option><option value="github">GitHub (advanced)</option></select>
     </label>
     <div data-prov="google">
       <p class="hint">Saves your settings to a hidden app folder in your own Google Drive. Raindrop can only see that folder.</p>
       <button class="btn" id="gConnect">Connect Google account</button><button class="btn alt" id="gDisconnect">Disconnect</button>
       <p class="hint" id="gStatus"></p>
     </div>
-    <div data-prov="github"><p class="hint">Saves settings to a private Gist in your GitHub account. Add a classic token (scope "gist" only) under API keys.</p></div>
+    <div data-prov="github"><p class="hint">Smart Sync will ask for your Gist ID and GitHub token when needed. Leave Gist ID blank to create a new Gist.</p><button class="btn alt" id="ghSettings" type="button">GitHub backup connection...</button></div>
     <div data-prov="google github">
-      <label class="row"><input type="checkbox" data-k="sync.auto"> Auto-sync (pull on open, push after changes)</label>
-      <button class="btn" id="syncPush">Sync now</button> <button class="btn alt" id="syncPull">Pull</button>
+      <label class="row"><input type="checkbox" data-k="sync.auto"> Auto-sync (check both copies and ask on conflicts)</label>
+      <button class="btn" id="syncPush">Smart Sync</button>
       <p class="hint" id="syncMsg"></p>
     </div>
-    <button class="btn alt" id="keysOpen">API keys...</button>
-    <p class="hint">Your keys are encrypted with a passphrase if you set one.</p>
+    <h3 class="subh">Notes and todos privacy</h3>
+    <p class="hint" id="nvStatus"></p>
+    <div class="btn-row"><button class="btn" id="nvOpen" type="button" hidden>Account Settings...</button><button class="btn alt" id="nvLockNotesNow" type="button" hidden>Lock Notes</button> <button class="btn alt" id="nvLockTodosNow" type="button" hidden>Lock Todos</button> <button class="btn alt" id="nvLockNow" type="button">Lock both</button></div>
+    <label>Auto-lock <select data-k="nvOpts.auto"><option value="never">Stay unlocked until the browser closes</option><option value="tab">Lock when I close this tab</option><option value="1">Lock after 1 minute without activity</option><option value="5">Lock after 5 minutes</option><option value="15">Lock after 15 minutes</option><option value="30">Lock after 30 minutes</option><option value="60">Lock after 1 hour</option></select></label>
+    <label class="row"><input type="checkbox" data-k="nvOpts.showInfo"> Show the storage note under Notes and Todos</label>
+    <label>Locked widget style <select data-k="nvOpts.lockedStyle"><option value="quiet">Quiet lock</option><option value="silhouette">Soft silhouette</option><option value="inline">Inline status</option><option value="frosted">Frosted veil</option></select></label>
+    <p class="hint">Applies to locked Notes and Todos. Hover or focus to reveal the unlock action; tap anywhere on the preview to unlock. This choice syncs with your settings.</p>
+    <label class="row"><input type="checkbox" data-k="nvOpts.sync"> Include notes and todos when syncing</label>
+    <p class="hint">Turn this off to keep them on this device only. With encryption on, only the encrypted copy is ever synced.</p>
+    <h3 class="subh">Search focus and hotkeys</h3>
+    <label>On a new tab, put the cursor in
+      <select data-k="focus.mode"><option value="browser">Chrome's address bar (default)</option><option value="page">Raindrop's search bar</option></select>
+    </label>
+    <p class="hint" id="focusMsg">Chrome always starts in the address bar. The second option reopens the empty tab as a Raindrop tab, which needs the optional "Tabs" permission.</p>
+    <label>Hold this key to show move and lock icons
+      <select data-k="hot.edit"><option value="Alt">Alt</option><option value="Ctrl">Ctrl</option><option value="Shift">Shift</option><option value="Meta">Meta (Win / Cmd)</option></select>
+    </label>
+    <p class="hint">Hold it while hovering a widget, or hold it and click a widget to keep its icons showing. Icons stay hidden while the search bar is active.</p>
+    <label>Focus the search bar <input type="text" class="hk" data-hk="search" readonly placeholder="Click, then press keys"></label>
+    <label>Open this menu <input type="text" class="hk" data-hk="settings" readonly placeholder="Click, then press keys"></label>
+    <label>Lock / unlock notes and todos <input type="text" class="hk" data-hk="nv" readonly placeholder="Click, then press keys"></label>
+    <button class="btn alt" id="hkReset" type="button">Reset hotkeys</button>
+    <p class="hint">Click a box and press the keys you want. A single modifier such as Alt also works. Esc cancels.</p>
+
     </details>
 
-    <p><a id="export">Export</a> &middot; <a id="import">import</a> &middot; <a id="resetLayout">reset layout</a> &middot; <a id="reset">reset all</a></p>
-    <p class="hint" id="ver"></p>
-    <p class="hint">Keys: S settings, Esc close.</p>
+    <section class="sidebar-section sidebar-about" aria-labelledby="aboutTitle">
+      <h3 class="subh" id="aboutTitle">About Raindrop</h3>
+      <p class="hint" id="aboutLegal"></p>
+      <div class="sidebar-action-grid">
+        <button class="btn alt" id="openTerms" type="button">Terms of Use</button>
+        <button class="btn alt" id="openPriv" type="button">Privacy Policy</button>
+        <button class="btn alt" id="developerOpen" type="button">Developer team</button>
+        <button class="btn alt" id="replayTour" type="button">Replay quick start</button>
+      </div>
+    </section>
+    <section class="sidebar-section sidebar-backup" aria-labelledby="backupTitle">
+      <h3 class="subh" id="backupTitle">Backup</h3>
+      <p class="hint">Keep a copy of your setup, or restore one.</p>
+      <div class="sidebar-action-grid"><button id="export" class="btn alt" type="button">Export backup</button><button id="import" class="btn alt" type="button">Import backup</button></div>
+    </section>
+    <section class="ui-danger-zone" aria-labelledby="dangerZoneTitle"><p id="dangerZoneTitle" class="danger-zone-title">Danger zone</p><p class="hint">Reset actions always ask for confirmation.</p><div class="sidebar-action-grid"><button id="resetLayout" class="btn danger" type="button">Reset layout</button><button id="reset" class="btn danger" type="button">Reset all settings</button></div></section>
+    <footer class="sidebar-footer"><p id="ver"></p><p>S settings · Esc close</p></footer>
+  </div>
+</div>
+<div id="developerModal" class="modal" hidden role="dialog" aria-modal="true" aria-labelledby="developerTitle" aria-describedby="developerIntro">
+  <div class="mscrim"></div>
+  <div class="mbox developer-box">
+    <header class="developer-header"><div class="developer-brand"><img class="raindrop-logo" src="icons/128.png" alt="" width="48" height="48"><div><p class="developer-eyebrow">PEOPLE BEHIND RAINDROP</p><h2 id="developerTitle">Made with care.</h2></div></div><button id="developerClose" class="ui-icon-button" type="button" aria-label="Close developer team">×</button></header>
+    <p id="developerIntro" class="developer-intro">Meet the people who build, test, and support your everyday space.</p>
+    <p id="developerMessage" class="developer-message"></p>
+    <div id="developerTeam" class="developer-team"></div>
+    <nav id="developerLinks" class="developer-links" aria-label="Project links"></nav>
+    <footer class="developer-footer"><div><p id="developerStatus" role="status" aria-live="polite"></p><p id="developerUpdated" class="hint"></p></div><button id="developerRefresh" class="btn alt" type="button">Refresh team</button></footer>
+    <p class="hint developer-disclosure">Opening this panel checks public team information on GitHub. Successful results are cached for 24 hours. Your settings and API keys are not sent.</p>
+  </div>
+</div>
+<div id="ghModal" class="modal" hidden role="dialog" aria-modal="true" aria-labelledby="ghModalTitle">
+  <div class="mscrim"></div>
+  <div class="mbox">
+    <div class="connection-hero" aria-hidden="true"><span class="panel-brand-mark"><img class="raindrop-logo" src="icons/128.png" width="128" height="128" alt="" aria-hidden="true"></span><div class="connection-cards"><i></i><i class="primary-card"></i><i></i></div></div>
+    <h2 id="ghModalTitle">Connect GitHub backup</h2>
+    <p class="hint">Connect using a GitHub personal access token with Gist permission. No master password is required to sync ordinary settings.</p>
+    <label>Gist ID or URL (optional for a new backup) <input id="ghGistInput" type="text" autocomplete="off" spellcheck="false" placeholder="Paste a Gist ID or URL, or leave blank"></label>
+    <label>GitHub token <input id="ghTokenInput" type="password" autocomplete="off" spellcheck="false" placeholder="Paste token or leave blank to reuse saved token"></label>
+    <p class="hint">The token is saved only in this browser's extension storage, not exported or uploaded to the Gist. This local storage is not master-password encrypted; protect access to your browser profile.</p>
+    <p class="hint" id="ghModalMsg"></p>
+    <div class="btn-row"><button class="btn alt" id="ghCancel" type="button">Cancel</button><button class="btn alt" id="ghSaveOnly" type="button">Save connection</button><button class="btn" id="ghSaveSync" type="button">Save &amp; Smart Sync</button></div>
   </div>
 </div>
 <div id="keysModal" class="modal" hidden>
   <div class="mscrim"></div>
-  <div class="mbox">
-    <h2>API keys</h2>
-    <p class="hint" data-st="plain">Keys are stored in this browser without encryption. Set a passphrase below to encrypt them.</p>
-    <p class="hint" data-st="locked">Your keys are encrypted. Enter your passphrase to unlock them for this browser session.</p>
-    <p class="hint" data-st="open">Your keys are encrypted at rest (AES-256-GCM) and stay unlocked until you close the browser or lock them.</p>
-    <div data-st="plain open">
-      <label>Unsplash access key <input type="password" data-key="UNSPLASH_ACCESS_KEY" autocomplete="off" spellcheck="false"></label>
-      <label>API Ninjas key <input type="password" data-key="API_NINJAS_KEY" autocomplete="off" spellcheck="false"></label>
-      <label>GitHub token (gist scope) <input type="password" data-key="GITHUB_TOKEN" autocomplete="off" spellcheck="false"></label>
-      <label>Gist ID <input type="text" data-k="sync.gist" placeholder="Created on first sync" autocomplete="off"></label>
-    </div>
-    <div data-st="plain">
-      <label>New passphrase (8+ characters) <input type="password" id="kPass" autocomplete="new-password"></label>
-      <label>Repeat passphrase <input type="password" id="kPass2" autocomplete="new-password"></label>
-      <button class="btn" id="kProtect">Encrypt keys</button>
-    </div>
+  <div class="mbox" role="dialog" aria-modal="true" aria-labelledby="masterTitle">
+    <h2 id="masterTitle">Account Settings</h2>
+    <button class="btn alt" id="accountBack" type="button" hidden>← Account Settings</button>
+    <section data-account-pane="home">
+    <p class="hint" id="masterStatus"></p>
+    <p class="hint">One password protects API keys, Notes and Todos. Activating API services keeps Notes and Todos locked until you unlock them manually.</p>
+    <div class="account-actions"><button class="btn alt" data-account-open="api" type="button">API keys...</button><button class="btn alt" data-account-open="password" type="button">Set up / change master password...</button><button class="btn alt" data-account-open="recovery" type="button">Recover using passphrase...</button></div>
+    <div class="btn-row"><button class="btn alt" id="masterUnlockNotes" type="button">Unlock Notes and Todos...</button><button class="btn alt" id="kLock" type="button">Lock everything</button></div>
+    <h3 class="subh">Notes and Todos privacy</h3>
+    <label>Auto-lock private widgets <select data-k="nvOpts.auto"><option value="never">Stay unlocked until the browser closes</option><option value="tab">Lock when I close this tab</option><option value="1">Lock after 1 minute</option><option value="5">Lock after 5 minutes</option><option value="15">Lock after 15 minutes</option><option value="30">Lock after 30 minutes</option><option value="60">Lock after 1 hour</option></select></label>
+    <div class="btn-row"><button class="btn alt" id="masterLockNotes" type="button">Lock Notes</button><button class="btn alt" id="masterLockTodos" type="button">Lock Todos</button><button class="btn alt" id="masterLockPrivate" type="button">Lock Notes and Todos</button></div>
+    <p class="hint">Private widget locks do not stop API services such as Unsplash.</p>
+    </section>
+    <section data-account-pane="api" hidden>
     <div data-st="locked">
-      <label>Passphrase <input type="password" id="kUnlockPass" autocomplete="current-password"></label>
-      <button class="btn" id="kUnlock">Unlock</button>
+      <label>Master password <input type="password" id="kUnlockPass" autocomplete="current-password"></label>
+      <button class="btn" id="kUnlock" type="button">Activate API services</button>
     </div>
-    <div data-st="open">
-      <label class="row"><input type="checkbox" data-k="keys.syncVault"> Include the encrypted keys when syncing</label>
-      <button class="btn alt" id="kLock">Lock now</button> <button class="btn alt" id="kRemove">Remove passphrase</button>
-    </div>
-    <p class="hint" id="kMsg"></p>
-    <button class="btn" id="keysClose">Done</button>
-    <p class="hint">Use a passphrase you do not use elsewhere. If you forget it the keys cannot be recovered; just enter them again.</p>
+    <h3 class="subh">API keys</h3>
+    <p class="hint">Keys stay masked. Each reveal requires your master password and automatically hides again after 30 seconds.</p>
+    <label>Unsplash access key <span class="secret-field"><input type="password" data-key="UNSPLASH_ACCESS_KEY" autocomplete="off" spellcheck="false"><button class="mini" type="button" data-reveal-key="UNSPLASH_ACCESS_KEY" aria-label="Show Unsplash access key" aria-pressed="false"></button></span></label>
+    <label>API Ninjas key <span class="secret-field"><input type="password" data-key="API_NINJAS_KEY" autocomplete="off" spellcheck="false"><button class="mini" type="button" data-reveal-key="API_NINJAS_KEY" aria-label="Show API Ninjas key" aria-pressed="false"></button></span></label>
+    </section>
+    <section data-account-pane="password" hidden>
+    <h3 class="subh">Set up or change master password</h3>
+    <p class="hint" id="masterLegacyHelp">Existing protection is authenticated before changes. Older backups may need their previous Notes/Todos password once.</p>
+    <label>Current master password <input type="password" id="masterCurrent" autocomplete="current-password"></label>
+    <label id="masterLegacyLabel">Previous Notes/Todos password (older backups only) <input type="password" id="masterLegacy" autocomplete="current-password"></label>
+    <label>New master password (8+ characters; leave blank to keep current) <input type="password" id="kPass" autocomplete="new-password"></label>
+    <label>Repeat new master password <input type="password" id="kPass2" autocomplete="new-password"></label>
+    <label class="row"><input type="checkbox" id="masterRotate"> Generate a new recovery phrase</label>
+    <button class="btn" id="kProtect" type="button">Save shared master password</button>
+    </section>
+    <section data-account-pane="recovery" id="masterRecovery" hidden>
+      <p class="hint">Your shared 12-word recovery phrase resets the password for API keys, Notes and Todos. The phrase stays the same after recovery.</p>
+      <label>Recovery phrase <textarea id="masterPhrase" rows="3" autocomplete="off" spellcheck="false"></textarea></label>
+      <label>New master password <input type="password" id="masterRecoverPass" autocomplete="new-password"></label>
+      <label>Repeat new master password <input type="password" id="masterRecoverRepeat" autocomplete="new-password"></label>
+      <label id="masterRecoveryLegacyLabel">Existing API password (only for older, unlinked backups) <input type="password" id="masterRecoveryLegacy" autocomplete="current-password"></label>
+      <button class="btn" id="masterRecover" type="button">Recover master password</button>
+    </section>
+    <section data-account-pane="seed" id="masterSeedSection" hidden>
+      <p><b>Save your recovery phrase.</b> It recovers your master password and all protected data. It is shown only now.</p>
+      <div id="masterSeed" class="seed"></div>
+      <button class="btn alt" id="masterSeedCopy" type="button">Copy recovery phrase</button>
+      <label class="row"><input type="checkbox" id="masterSeedSaved"> I saved this phrase somewhere safe</label>
+    </section>
+    <p class="hint" id="kMsg" role="status"></p>
+    <button class="btn" id="keysClose" type="button">Done</button>
   </div>
 </div>
+<datalist id="tzlist"></datalist>
+<div id="clockModal" class="modal" hidden>
+  <div class="mscrim"></div>
+  <div class="mbox">
+    <h2 id="ckTitle">Clock</h2>
+    <label>Label (optional) <input type="text" id="ckLabel" autocomplete="off"></label>
+    <p class="hint">“Local” is the default name. Rename it to Home or anything you prefer; a blank label hides the main clock label.</p>
+    <label>Country or city <input type="text" id="ckPlace" list="tzlist" placeholder="e.g. Singapore, Malaysia, Tokyo" autocomplete="off"></label>
+    <label>Style <select id="ckMode"><option value="digital">Digital</option><option value="analog">Analogue</option></select></label>
+    <h3 class="subh">Date</h3>
+    <label class="row"><input type="checkbox" id="ckDateShow"> Show the date on this clock</label>
+    <label>Date format <select id="ckDateFmt"></select></label>
+    <label>Language and style <select id="ckDateLang"><option value="mine">My browser's language and style</option><option value="country">This country's own style</option></select></label>
+    <label>Position <select id="ckDatePos"><option value="below">Below the time</option><option value="above">Above the time</option></select></label>
+    <label class="row"><input type="checkbox" id="ckDateCaps"> UPPERCASE</label>
+    <p class="hint">The date follows this clock's country or city time zone, so it can differ from your local date. "Country's own style" only applies when you typed a country (for example Japan).</p>
+    <h3 class="subh">Placement</h3>
+    <label>Group <select id="ckGroup"></select></label>
+    <label>Time format (all clocks) <select data-k="fmt"><option value="24">24-hour</option><option value="12">12-hour</option></select></label>
+    <p class="hint" id="ckMsg">Leave the place empty for your local time.</p>
+    <button class="btn" id="ckSave">Save</button> <button class="btn alt" id="ckCancel">Cancel</button>
+  </div>
+</div>
+<div id="cwModal" class="modal" hidden>
+  <div class="mscrim"></div>
+  <div class="mbox">
+    <h2 id="cwTitle">Custom widget</h2>
+    <label>Name <input type="text" id="cwName" autocomplete="off"></label>
+    <label>Group <select id="cwGroup"></select></label>
+    <label>Type <select id="cwTpl"><option value="embed">Web page embed</option><option value="html">HTML / script</option><option value="image">Image</option><option value="text">Text</option></select></label>
+    <div id="cwWarn" class="warn"><b>Only add what you trust.</b> Embeds and scripts load content from other sites and can run code inside your new tab. Continue only if you know where it comes from.</div>
+    <label id="cwUrlL"><span id="cwUrlT"></span> <input type="text" id="cwUrl" spellcheck="false" autocomplete="off"></label>
+    <div id="cwImgBox">
+      <label>Or upload a picture <input type="file" id="cwFile" accept="image/*"></label>
+      <p class="hint" id="cwImgName"></p>
+      <button class="btn alt" id="cwImgClear" type="button">Remove uploaded picture</button>
+    </div>
+    <label id="cwHtmlL">HTML or script code (runs in an isolated sandbox) <textarea id="cwHtml" rows="7" spellcheck="false"></textarea></label>
+    <div id="cwTextL"><div class="lbl">Text</div>
+      <div class="rte-bar">
+        <button type="button" data-fmt="p" title="Paragraph">P</button><button type="button" data-fmt="h1" title="Heading 1">H1</button><button type="button" data-fmt="h2" title="Heading 2">H2</button><button type="button" data-fmt="h3" title="Heading 3">H3</button>
+        <button type="button" data-cmd="bold" title="Bold"><b>B</b></button><button type="button" data-cmd="italic" title="Italic"><i>I</i></button><button type="button" data-cmd="underline" title="Underline"><u>U</u></button><button type="button" data-cmd="strikeThrough" title="Strikethrough"><s>S</s></button>
+        <button type="button" data-cmd="insertUnorderedList" title="Bullet list">&bull; List</button><button type="button" data-cmd="insertOrderedList" title="Numbered list">1. List</button><button type="button" data-cmd="removeFormat" title="Clear formatting">Clear</button>
+      </div>
+      <div id="cwRte" class="rte" contenteditable="true" role="textbox" aria-multiline="true" spellcheck="true"></div>
+      <p class="hint">Only safe formatting is kept (headings, bold, italic, underline, strike, lists). Scripts, images, links and styles are always removed.</p>
+    </div>
+    <label id="cwRefL">Refresh <select id="cwRef"><option value="0">Never</option><option value="1">Every minute</option><option value="5">Every 5 minutes</option><option value="15">Every 15 minutes</option><option value="30">Every 30 minutes</option><option value="60">Every hour</option></select></label>
+    <label class="row" id="cwScrollL"><input type="checkbox" id="cwScroll"> Allow scrolling</label>
+    <p class="hint" id="cwMsg"></p>
+    <button class="btn" id="cwSave">Save</button> <button class="btn alt" id="cwCancel">Close</button>
+  </div>
+</div>
+<div id="nvModal" class="modal" hidden>
+  <div class="mscrim"></div>
+  <div class="mbox">
+    <h2>Unlock Notes and Todos</h2>
+    <p class="hint" data-nv="setup">Encrypt your notes and todos with a password. There is no "forgot password" button: if you lose the password, only your 12-word recovery phrase can reset it. Without both, nobody (including Raindrop) can recover the data.</p>
+    <label id="nvTargetLabel" hidden>Unlock <select id="nvTarget"><option value="both">Notes and Todos</option><option value="notes">Notes only</option><option value="todos">Todos only</option></select></label>
+    <p class="hint">Enter your master password to unlock the selected private widgets. Use Account Settings to change or recover the shared password.</p>
+    <div data-nv="setup"><label>New password (8+ characters) <input type="password" id="nvP1" autocomplete="new-password"></label><label>Repeat password <input type="password" id="nvP2" autocomplete="new-password"></label><button class="btn" id="nvEnable">Encrypt notes and todos</button></div>
+    <div data-nv="phrase"><p class="hint"><b>Write down this recovery phrase.</b> It is shown once and is the only way to reset your password.</p><div class="seed" id="nvSeed"></div><div class="btn-row"><button class="btn alt" id="nvCopy" type="button">Copy phrase</button></div><label class="row"><input type="checkbox" id="nvSaved"> I saved my recovery phrase somewhere safe</label><button class="btn" id="nvDone" disabled>Done</button></div>
+    <div data-nv="unlock"><label>Master password <input type="password" id="nvUnlockPw" autocomplete="current-password"></label><button class="btn" id="nvUnlock">Unlock</button> <button class="btn alt" id="nvForgot" type="button">Use recovery phrase</button></div>
+    <div data-nv="recover"><p class="hint">Enter your 12-word recovery phrase and choose a new shared Notes/Todos password. Your recovery phrase stays the same; the API-key vault password is not changed.</p><label>Recovery phrase <textarea id="nvPhrase" rows="3" spellcheck="false" autocomplete="off"></textarea></label><label>New password (8+ characters) <input type="password" id="nvR1" autocomplete="new-password"></label><label>Repeat new password <input type="password" id="nvR2" autocomplete="new-password"></label><button class="btn" id="nvReset">Reset password and unlock</button></div>
+    <div data-nv="manage"><p class="hint">Notes and Todos share AES-256-GCM encryption. Lock an open widget separately, or lock both.</p><label>Auto-lock <select data-k="nvOpts.auto"><option value="never">Stay unlocked until the browser closes</option><option value="tab">Lock when I close this tab</option><option value="1">Lock after 1 minute without activity</option><option value="5">Lock after 5 minutes</option><option value="15">Lock after 15 minutes</option><option value="30">Lock after 30 minutes</option><option value="60">Lock after 1 hour</option></select></label><div class="btn-row"><button class="btn" id="nvUnlockMore" hidden>Unlock remaining widget...</button><button class="btn alt" id="nvLockNotes">Lock Notes</button><button class="btn alt" id="nvLockTodos">Lock Todos</button><button class="btn alt" id="nvLock">Lock both</button><button class="btn danger" id="nvOff">Turn off encryption</button></div></div>
+    <p class="hint" id="nvMsg"></p>
+    <button class="btn alt" id="nvClose" type="button">Close</button>
+  </div>
+</div>
+<div id="linkModal" class="modal" hidden>
+  <div class="mscrim"></div>
+  <div class="mbox">
+    <h2>Quick links</h2>
+    <p class="hint">Give each site a name and a web address. Press "Add more" for another one.</p>
+    <div id="linkRows"></div>
+    <div class="btn-row"><button class="btn alt" id="linkMore" type="button">+ Add more</button></div>
+    <p class="hint" id="linkMsg"></p>
+    <button class="btn" id="linkSave">Save links</button> <button class="btn alt" id="linkCancel">Cancel</button>
+  </div>
+</div>
+<div id="askModal" class="modal" hidden role="dialog" aria-modal="true" aria-labelledby="askTitle">
+  <div class="mscrim"></div>
+  <div class="mbox">
+    <div class="dialog-danger-icon" aria-hidden="true">!</div>
+    <h2 id="askTitle"></h2>
+    <p class="hint" id="askText"></p>
+    <label id="askL"><span id="askLabel"></span><input type="text" id="askInput" autocomplete="off"></label>
+    <label class="row" id="askRemL" hidden><input type="checkbox" id="askRem"> <span id="askRemT"></span></label>
+    <p class="hint" id="askErr"></p>
+    <div class="dialog-actions"><button class="btn alt" id="askNo">Cancel</button><button class="btn" id="askOk">OK</button></div>
+  </div>
+</div>
+<div id="legal" class="sheet-wrap" hidden role="dialog" aria-modal="true" aria-labelledby="legTitle">
+  <div class="sheet">
+    <div class="sh-head"><div class="sh-logo"><img class="raindrop-logo" src="icons/128.png" width="128" height="128" alt="" aria-hidden="true"></div><div><h2 id="legTitle">Before you start</h2><p id="legSub"></p></div></div>
+    <div class="sh-tabs"><button id="legTabT" class="on" type="button">Terms of Use</button><button id="legTabP" type="button">Privacy Policy</button></div>
+    <div id="legalBody" class="sh-body" tabindex="0"></div>
+    <div class="sh-foot" id="legFoot">
+      <label class="sh-check"><input type="checkbox" id="legAgree"><span>I have read and agree to the Terms of Use and the Privacy Policy.</span></label>
+      <div class="sh-btns"><button id="legDecline" class="sbtn" type="button">Decline</button><button id="legAccept" class="sbtn pri" type="button" disabled>Accept and continue</button></div>
+    </div>
+    <div class="sh-foot" id="legDeclined" hidden>
+      <p id="legDeclMsg">Raindrop cannot run until you accept the Terms of Use and Privacy Policy. Nothing has been saved or sent anywhere.</p>
+      <div class="sh-btns"><button id="legReview" class="sbtn" type="button">Review the terms</button><button id="legRemove" class="sbtn danger" type="button">Remove Raindrop</button></div>
+    </div>
+    <div class="sh-foot" id="legView" hidden><p id="legStatus"></p><div class="sh-btns"><button id="legClose" class="sbtn pri" type="button">Close</button></div></div>
+  </div>
+</div>
+<div id="tour" class="sheet-wrap" hidden role="dialog" aria-modal="true" aria-labelledby="tourT">
+  <div class="sheet tour">
+    <div class="tr-ill" id="tourIll"></div>
+    <div class="tr-body"><p class="tr-step" id="tourStep"></p><h2 id="tourT"></h2><p id="tourD"></p></div>
+    <div class="sh-foot tr-foot"><div class="tr-dots" id="tourDots"></div><div class="sh-btns"><button id="tourSkip" class="sbtn ghost" type="button">Skip tour</button><button id="tourBack" class="sbtn" type="button">Back</button><button id="tourNext" class="sbtn pri" type="button">Next</button></div></div>
+  </div>
+</div>
+<div id="backupWelcome" class="sheet-wrap" hidden role="dialog" aria-modal="true" aria-labelledby="bwTitle">
+  <div class="sheet tour">
+    <div class="tr-ill"><div class="mk"><div class="bw-illustration" aria-hidden="true"><div class="bw-illustration-icon">↥</div><div class="bw-illustration-file">raindrop.json</div><div class="bw-illustration-line"></div><div class="bw-illustration-line short"></div></div></div></div>
+    <div class="tr-body"><p class="tr-step">One last thing</p><h2 id="bwTitle">Already have Raindrop settings?</h2><p class="bw-description">Restore an existing backup, or start fresh. You can always manage your settings later.</p>
+      <div class="bw-actions">
+        <button type="button" class="bw-action bw-primary" id="bwImport"><strong>Import settings</strong><span>Restore your existing raindrop.json file</span></button>
+        <button type="button" class="bw-action" id="bwCloud"><strong>Import from cloud</strong><span>GitHub Gist or Google Drive backup</span></button>
+        <button type="button" class="bw-action" id="bwExport"><strong>Export settings</strong><span>Save a copy of your current settings</span></button>
+      </div>
+      <div class="bw-cloud" id="bwCloudOptions" hidden>
+        <p class="bw-cloud-title">Choose your cloud backup</p>
+        <div class="bw-provider-actions">
+          <button type="button" class="bw-action" id="bwGithub"><strong>GitHub Gist</strong><span>Enter Gist ID and token, or reuse saved credentials</span></button>
+          <button type="button" class="bw-action" id="bwGoogle"><strong>Google Drive</strong><span>Connect your Google account and check for backups</span></button>
+        </div>
+        <p id="bwCloudStatus" class="bw-cloud-status" role="status" aria-live="polite"></p>
+      </div>
+      <div class="bw-secondary"><button type="button" id="bwResetLayout">Reset layout</button><span aria-hidden="true">·</span><button type="button" id="bwResetAll">Reset all</button></div>
+    </div>
+    <div class="sh-foot tr-foot"><span class="bw-note">You can also manage backups later in Settings.</span><div class="sh-btns"><button id="bwContinue" class="sbtn pri" type="button">Start using Raindrop</button></div></div>
+  </div>
+</div>
+<div id="restoreUnlockModal" class="modal" hidden>
+  <div class="mscrim"></div>
+  <form id="restoreUnlockForm" class="mbox" role="dialog" aria-modal="true" aria-labelledby="restoreUnlockTitle" aria-describedby="restoreUnlockHelp">
+    <h2 id="restoreUnlockTitle">Unlock restored settings</h2>
+    <p id="restoreUnlockHelp" class="hint"></p>
+    <label><span id="restoreUnlockLabel">Master password</span><input id="restoreUnlockPw" type="password" autocomplete="current-password" required></label>
+    <p id="restoreUnlockMsg" class="hint" role="status" aria-live="polite"></p>
+    <div class="dialog-actions">
+      <button id="restoreUnlockRecovery" type="button" class="btn alt" hidden>Use recovery phrase</button>
+      <button id="restoreUnlockSkip" type="button" class="btn alt">Unlock later</button>
+      <button id="restoreUnlockSubmit" type="submit" class="btn">Unlock</button>
+    </div>
+  </form>
+</div>
 <script src="config.js"></script>
-<script src="rain.js"></script>
-<script src="app.js"></script>
 </body>
 </html>

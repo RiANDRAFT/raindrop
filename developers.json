@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "updated": "2026-11-06",
+  "message": "A little space. A better start. Built and maintained by RiANDRAFT.",
+  "team": [
+    {
+      "name": "RiANDRAFT",
+      "role": "Main developer",
+      "bio": "Creator and maintainer of Raindrop.",
+      "url": "https://github.com/RiANDRAFT"
+    }
+  ],
+  "links": [
+    {
+      "label": "Project on GitHub",
+      "url": "https://github.com/RiANDRAFT/raindrop"
+    }
+  ]
+}
